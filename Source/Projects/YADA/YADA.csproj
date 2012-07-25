@@ -41,14 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigurationManager.cs" />
-    <Compile Include="DataAccess\DataOperation.cs" />
-    <Compile Include="DataAccess\ADOReader.cs" />
-    <Compile Include="DataAccess\ReaderFactory.cs" />
+    <Compile Include="DataProducer.cs" />
+    <Compile Include="DataProducerResult.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="IDataProducer.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataBase.cs" />
+    <Compile Include="SimpleDataReader.cs" />
+    <Compile Include="SimpleDynamic.cs" />
+    <Compile Include="WhoKnows.cs" />
+    <Compile Include="StoredProcedureProducerCache.cs" />
+    <Compile Include="StubDataReader.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
