@@ -18,7 +18,7 @@ namespace YADA
             Reader = reader;
         }
 
-        public DataProducerResult Read()
+        public DataProducerResult<dynamic> Read()
         {
             var reader = Reader.ProduceDataReader();
 
@@ -46,7 +46,12 @@ namespace YADA
 
             reader.Close();
 
-            return new DataProducerResult(rows);
+            return new DataProducerResult<dynamic>(rows);
+        }
+
+        public DataProducerResult<T> Read<T>()
+        {
+            throw new NotImplementedException();
         }
 
         public static IEnumerable<string> FindColumnNamesFromDataReader(IDataReader reader)

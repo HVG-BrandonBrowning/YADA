@@ -20,7 +20,7 @@ namespace UnitTests
 
         static BasicDataBaseOperations()
         {
-            Database = new Database("Data Source=(local);Initial Catalog=AdventureWorks;Integrated Security=SSPI;");
+            Database = new Database("Data Source=(local);Initial Catalog=AdventureWorks2012;Integrated Security=SSPI;");
             MockRepository = new MockRepository();
         }
 
@@ -28,8 +28,8 @@ namespace UnitTests
         // [Ignore("Is more of an acceptence test")]
         public void GettingRecordsFromTheLocalAdventureworksDatabaseIsFasterAfterTheFirst()
         {
-            long firstRun = Time(() => Database.LoadFromStoredProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@EmployeeID", 5) }));
-            long secondRun = Time(() => Database.LoadFromStoredProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@EmployeeID", 5) }));
+            long firstRun = Time(() => Database.ExecuteProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@BusinessEntityID", 5) }));
+            long secondRun = Time(() => Database.ExecuteProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@BusinessEntityID", 5) }));
 
             Assert.IsTrue(firstRun > (secondRun * 2));
         }
@@ -38,8 +38,8 @@ namespace UnitTests
         // [Ignore("Is more of an acceptence test")]
         public void GettingRecordsFromTheLocalAdventureworksDatabaseIsUnder30msTheSecondTime()
         {
-            long firstRun = Time(() => Database.LoadFromStoredProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@EmployeeID", 5) }));
-            long secondRun = Time(() => Database.LoadFromStoredProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@EmployeeID", 5) }));
+            long firstRun = Time(() => Database.ExecuteProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@BusinessEntityID", 5) }));
+            long secondRun = Time(() => Database.ExecuteProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@BusinessEntityID", 5) }));
 
             Assert.That(secondRun < 30);
         }

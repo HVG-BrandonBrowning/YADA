@@ -65,10 +65,10 @@
       <DependentUpon>SmallTableReading.feature</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StepDefinations\BaseRunner.cs" />
-    <Compile Include="StepDefinations\Hookup.cs" />
-    <Compile Include="StepDefinations\SmallTableReading.cs" />
-    <Compile Include="StepDefinations\Values\NarrowSmallData.cs" />
+    <Compile Include="StepDefinitions\BaseRunner.cs" />
+    <Compile Include="StepDefinitions\Hookup.cs" />
+    <Compile Include="StepDefinitions\SmallTableReading.cs" />
+    <Compile Include="StepDefinitions\Values\NarrowSmallData.cs" />
     <Content Include="Scripts\CreateYadaTestDB.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

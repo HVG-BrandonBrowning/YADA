@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YADA.Acceptance.StepDefinations.Values
+namespace YADA.Acceptance.StepDefinitions.Values
 {
     public class NarrowSmallData
     {

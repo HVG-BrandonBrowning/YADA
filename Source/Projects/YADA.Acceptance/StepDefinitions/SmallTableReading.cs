@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using FluentAssertions;
 using TechTalk.SpecFlow;
+using YADA;
 using YADA.Acceptance.Extensions;
-using YADA.Acceptance.StepDefinations.Values;
+using YADA.Acceptance.StepDefinitions.Values;
+using YADA.Simple;
 
-namespace YADA.Acceptance.StepDefinations
+namespace YADA.Acceptance.StepDefinitions
 {
     [Binding]
     internal class SmallTableReading : BaseRunner
     {
         private IList<int> _executionTimes;
+        private Database Database { get; set; }
         private TimeSpan ExecutionTime { get; set; }
 
         private IList<int> ExecutionTimes
@@ -27,6 +31,11 @@ namespace YADA.Acceptance.StepDefinations
         }
 
         private int NumberOfInsertedRows { get; set; }
+
+        private SmallTableReading()
+        {
+            Database = new Database("Data Source=(local);Initial Catalog=AdventureWorks2012;Integrated Security=SSPI;");
+        }
 
         [AfterScenario("database")]
         public void CleanUp()
@@ -55,15 +64,17 @@ namespace YADA.Acceptance.StepDefinations
         [Given(@"I have small table populated with (.*) rows")]
         public void GivenIHaveSmallTablePopulatedWithRows(int numberOfRows)
         {
+            NumberOfInsertedRows = numberOfRows;
+
             for (var i = 0; i < numberOfRows; i++)
             {
                 var paramters = new[]
-                    {
-                        Parameter.Create("TestValue1", StringExtensions.GetRandomString(47)),
-                        Parameter.Create("TestValue2", StringExtensions.GetRandomString(247))
-                    };
+                {
+                    new SqlParameter("TestValue1", StringExtensions.GetRandomString(47)), 
+                    new SqlParameter("TestValue2", StringExtensions.GetRandomString(247))
+                };
 
-                Database.InsertRow("[YadaTesting].[dbo].[CreateSmallDataRow]", paramters);
+                Database.ExecuteProcedure("[YadaTesting].[dbo].[CreateSmallDataRow]", paramters);
             }
 
             NumberOfInsertedRows = numberOfRows;
@@ -84,7 +95,7 @@ namespace YADA.Acceptance.StepDefinations
 
                 var keyID = (i % 2) + 1;
 
-                var item = Database<NarrowSmallData>.GetRecord("YadaTesting.dbo.GetNarrowSmallDataByID", new[] { Parameter.Create("SmallDataID", keyID) });
+                var item = Database.ExecuteProcedure("YadaTesting.dbo.GetNarrowSmallDataByID", new[] { new SqlParameter("SmallDataID", keyID), }).First();
 
                 stopWatch.Stop();
 
@@ -130,13 +141,13 @@ namespace YADA.Acceptance.StepDefinations
 
                 var parameters = new[]
                     {
-                        Parameter.Create("MinRecordID", startRecordID),
-                        Parameter.Create("MaxRecordID", startRecordID + numberOfRecords - 1)
+                        new SqlParameter("MinRecordID", startRecordID),
+                        new SqlParameter("MaxRecordID", startRecordID + numberOfRecords - 1)
                     };
 
                 var stopwatch = Stopwatch.StartNew();
 
-                var items = Database<NarrowSmallData>.GetRecords("[YadaTesting].[dbo].[GetRangeOfRecords]", parameters);
+                var items = Database.ExecuteProcedure("[YadaTesting].[dbo].[GetRangeOfRecords]", parameters);
 
                 stopwatch.Stop();
 

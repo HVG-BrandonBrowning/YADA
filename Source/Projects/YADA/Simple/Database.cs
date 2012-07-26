@@ -21,12 +21,20 @@ namespace YADA.Simple
         {
         }
 
-        public List<dynamic> LoadFromStoredProcedure(string storedProcedure, IEnumerable<SqlParameter> parameters = null)
+        public List<dynamic> ExecuteProcedure(string storedProcedure, IEnumerable<SqlParameter> parameters = null)
         {
             var producer = new SqlServerDataReaderProducer(Connection, storedProcedure, parameters);
             var formatter = new SimpleDataReader(producer, storedProcedure);
 
             return formatter.Read().Multiple().ToList();
+        }
+
+        public List<T> ExecuteProcedure<T>(string storedProcedure, IEnumerable<SqlParameter> parameters = null)
+        {
+            var producer = new SqlServerDataReaderProducer(Connection, storedProcedure, parameters);
+            var formatter = new SimpleDataReader(producer, storedProcedure);
+
+            return formatter.Read<T>().Multiple().ToList();
         }
     }
 }
