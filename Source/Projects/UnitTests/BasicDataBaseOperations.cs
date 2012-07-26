@@ -3,45 +3,45 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using Rhino.Mocks;
+using FluentAssertions;
 using NUnit.Framework;
+using Rhino.Mocks;
 using YADA;
+using YADA.Simple;
 
 namespace UnitTests
 {
-    internal class TestEntity
-    {
-        public int ID { get; set; }
-        public string Description { get; set; }
-    }
-
     [TestFixture]
     [Category("Basic_DataBase_Operations")]
     public class BasicDataBaseOperations
     {
+        private static Database Database { get; set; }
         private static MockRepository MockRepository { get; set; }
 
         static BasicDataBaseOperations()
         {
+            Database = new Database("Data Source=(local);Initial Catalog=AdventureWorks;Integrated Security=SSPI;");
             MockRepository = new MockRepository();
         }
 
         [Test]
-        public void GetRecordReturnsAnEntity()
+        // [Ignore("Is more of an acceptence test")]
+        public void GettingRecordsFromTheLocalAdventureworksDatabaseIsFasterAfterTheFirst()
         {
-            string sproc = "test";
+            long firstRun = Time(() => Database.LoadFromStoredProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@EmployeeID", 5) }));
+            long secondRun = Time(() => Database.LoadFromStoredProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@EmployeeID", 5) }));
 
-            var supplier = new StubDataReader(25);
-            var parser = new SimpleDataReader(supplier, sproc);
+            Assert.IsTrue(firstRun > (secondRun * 2));
+        }
 
-            List<dynamic> results1;
-            long time1 = Time(() => { results1 = parser.Read().Multiple().ToList(); });
+        [Test]
+        // [Ignore("Is more of an acceptence test")]
+        public void GettingRecordsFromTheLocalAdventureworksDatabaseIsUnder30msTheSecondTime()
+        {
+            long firstRun = Time(() => Database.LoadFromStoredProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@EmployeeID", 5) }));
+            long secondRun = Time(() => Database.LoadFromStoredProcedure("[dbo].[uspGetEmployeeManagers]", new SqlParameter[] { new SqlParameter("@EmployeeID", 5) }));
 
-            var supplier2 = new StubDataReader(100);
-            var parser2 = new SimpleDataReader(supplier2, sproc);
-
-            List<dynamic> results2;
-            long time2 = Time(() => { results2 = parser2.Read().Multiple().ToList(); });
+            Assert.That(secondRun < 30);
         }
 
         private static long Time(Action action)

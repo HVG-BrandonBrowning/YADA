@@ -41,15 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataProducer.cs" />
     <Compile Include="DataProducerResult.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="IDataProducer.cs" />
-    <Compile Include="Parameter.cs" />
+    <Compile Include="Extension.cs" />
+    <Compile Include="IDataReaderProducer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleDataReader.cs" />
     <Compile Include="SimpleDynamic.cs" />
-    <Compile Include="WhoKnows.cs" />
+    <Compile Include="Simple\Database.cs" />
+    <Compile Include="SqlServerDataReaderProducer.cs" />
     <Compile Include="StoredProcedureProducerCache.cs" />
     <Compile Include="StubDataReader.cs" />
   </ItemGroup>

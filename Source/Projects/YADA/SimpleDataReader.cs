@@ -10,9 +10,9 @@ namespace YADA
     public class SimpleDataReader
     {
         private string StoredProcedure { get; set; }
-        private IDataReader Reader { get; set; }
+        private IDataReaderProducer Reader { get; set; }
 
-        public SimpleDataReader(IDataReader reader, string storedProcedure = null)
+        public SimpleDataReader(IDataReaderProducer reader, string storedProcedure = null)
         {
             StoredProcedure = storedProcedure;
             Reader = reader;
@@ -20,12 +20,14 @@ namespace YADA
 
         public DataProducerResult Read()
         {
-            bool sprocCached = StoredProcedureProducerCache.ContainsProcedure(StoredProcedure);
+            var reader = Reader.ProduceDataReader();
+
+            bool sprocCached = Cache.ContainsProcedure(StoredProcedure);
 
             string[] columns;
             if (!sprocCached)
             {
-                columns = FindColumnNamesFromDataReader(Reader).ToArray();
+                columns = FindColumnNamesFromDataReader(reader).ToArray();
                 StoredProcedureProducerCache.Save(StoredProcedure, columns);
             }
             else
@@ -34,15 +36,15 @@ namespace YADA
             }
 
             List<dynamic> rows = new List<dynamic>();
-            while (Reader.Read())
+            while (reader.Read())
             {
                 object[] values = new object[columns.Length];
-                Reader.GetValues(values);
+                reader.GetValues(values);
 
                 rows.Add(new SimpleDynamic(columns, values));
             }
 
-            Reader.Close();
+            reader.Close();
 
             return new DataProducerResult(rows);
         }

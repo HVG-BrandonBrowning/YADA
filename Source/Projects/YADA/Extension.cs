@@ -5,8 +5,10 @@ using System.Text;
 
 namespace YADA
 {
-    public interface IDataProducer
+    public static class Extension
     {
-        DataProducerResult ProduceData();
+        public static void Ignore(this object o)
+        {
+        }
     }
 }

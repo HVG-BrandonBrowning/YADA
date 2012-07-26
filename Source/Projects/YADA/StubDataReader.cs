@@ -6,8 +6,10 @@ using System.Text;
 
 namespace YADA
 {
-    public class StubDataReader : IDataReader
+    public class StubDataReader : IDataReader, IDataReaderProducer
     {
+        public const int DEFAULT_ITERATIONS = 1000;
+
         private int CurrentIteration { get; set; }
         private int TotalIterations { get; set; }
         private Tuple<string, string> CurrentRow { get; set; }
@@ -192,6 +194,11 @@ namespace YADA
         public object this[int i]
         {
             get { if (i == 0) return CurrentRow.Item1; else if (i == 1) return CurrentRow.Item2; else throw new ArgumentException(); }
+        }
+
+        public IDataReader ProduceDataReader()
+        {
+            return new StubDataReader(DEFAULT_ITERATIONS);
         }
     }
 }
